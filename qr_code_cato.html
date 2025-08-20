@@ -2,22 +2,117 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Localização</title>
+  <title>Localização do Usuário</title>
+  <style>
+    /* Reset simples */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+      color: #333;
+    }
+
+    .container {
+      text-align: center;
+      background: #fff;
+      padding: 40px 60px;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      max-width: 400px;
+      width: 90%;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+      color: #5d5fef;
+    }
+
+    pre {
+      background: #f0f0f0;
+      padding: 15px;
+      border-radius: 10px;
+      font-size: 1.1rem;
+      margin-bottom: 30px;
+    }
+
+    .cat-info {
+      display: none;
+      text-align: left;
+      margin-top: 20px;
+    }
+
+    .cat-info h2 {
+      color: #ef5d5d;
+      margin-bottom: 10px;
+    }
+
+    .cat-info p {
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 10px 20px;
+      background: #5d5fef;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.3s ease;
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      background: #4a4bdc;
+    }
+  </style>
 </head>
 <body>
-  <h1>Sua Localização</h1>
-  <pre id="output">Obtendo localização...</pre>
+  <div class="container">
+    <h1>Obtendo sua localização...</h1>
+    <pre id="output">Por favor, aguarde.</pre>
+
+    <div class="cat-info" id="catInfo">
+      <h2>Informações do Gato</h2>
+      <p><strong>Nome:</strong> Felix</p>
+      <p><strong>Idade:</strong> 3 anos</p>
+      <p><strong>Peso:</strong> 4,2 kg</p>
+      <p><strong>Cor:</strong> Cinza tigrado</p>
+      <p><strong>Vacinação:</strong> Atualizada</p>
+      <a href="#" class="btn" id="moreBtn">Mais informações</a>
+    </div>
+  </div>
 
   <script>
     const output = document.getElementById('output');
+    const catInfo = document.getElementById('catInfo');
 
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         function(pos) {
-          const lat = pos.coords.latitude;
-          const lon = pos.coords.longitude;
+          const lat = pos.coords.latitude.toFixed(6);
+          const lon = pos.coords.longitude.toFixed(6);
           const data = `Latitude: ${lat}\nLongitude: ${lon}`;
-          output.textContent = data; // exibe na tela
+          output.textContent = data;
+
+          // Exibe informações do gato após 2 segundos
+          setTimeout(() => {
+            output.style.display = 'none';
+            catInfo.style.display = 'block';
+          }, 2000);
+
         },
         function(error) {
           output.textContent = 'Erro ao obter localização: ' + error.message;
@@ -26,6 +121,14 @@
     } else {
       output.textContent = 'Geolocalização não suportada neste navegador.';
     }
+
+    // Botão de "mais informações"
+    document.getElementById('moreBtn').addEventListener('click', (e) => {
+      e.preventDefault();
+      alert("Aqui você pode adicionar uma nova página com informações detalhadas do gato!");
+      // opcional: redirecionar para outra página
+      // window.location.href = "pagina-gato.html";
+    });
   </script>
 </body>
 </html>
