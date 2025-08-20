@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Localização</title>
+</head>
+<body>
+  <h1>Sua Localização</h1>
+  <pre id="output">Obtendo localização...</pre>
+
+  <script>
+    const output = document.getElementById('output');
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        function(pos) {
+          const lat = pos.coords.latitude;
+          const lon = pos.coords.longitude;
+          const data = `Latitude: ${lat}\nLongitude: ${lon}`;
+          output.textContent = data; // exibe na tela
+        },
+        function(error) {
+          output.textContent = 'Erro ao obter localização: ' + error.message;
+        }
+      );
+    } else {
+      output.textContent = 'Geolocalização não suportada neste navegador.';
+    }
+  </script>
+</body>
+</html>
