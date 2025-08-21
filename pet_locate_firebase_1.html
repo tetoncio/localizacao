@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pet Finder - Informações do Pet</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 400px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 24px;
+            padding: 32px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .pet-photo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin: 0 auto 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+            text-align: center;
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .pet-photo:hover {
+            transform: scale(1.05);
+        }
+
+        .pet-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .pet-name {
+            background: rgba(102, 126, 234, 0.1);
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: 600;
+            color: #2c3e50;
+            transition: all 0.3s ease;
+        }
+
+        .pet-name:hover {
+            background: rgba(102, 126, 234, 0.15);
+            border-color: rgba(102, 126, 234, 0.3);
+        }
+
+        .info-item {
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            cursor: default;
+        }
+
+        .info-item:hover {
+            background: rgba(255, 255, 255, 0.95);
+            border-color: rgba(102, 126, 234, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #34495e;
+            font-size: 14px;
+        }
+
+        .info-value {
+            color: #2c3e50;
+            font-weight: 500;
+        }
+
+        .address-section {
+            margin: 24px 0;
+            padding: 20px;
+            background: rgba(52, 152, 219, 0.1);
+            border-radius: 16px;
+            border: 2px solid rgba(52, 152, 219, 0.2);
+        }
+
+        .address-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+
+        .address-text {
+            color: #34495e;
+            line-height: 1.5;
+            margin-bottom: 16px;
+        }
+
+        .map-container {
+            width: 100%;
+            height: 200px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .location-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            padding: 18px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+            margin-top: 24px;
+        }
+
+        .location-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .location-btn:active {
+            transform: translateY(0);
+        }
+
+        .location-btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .status-message {
+            margin-top: 16px;
+            padding: 12px;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: 500;
+            display: none;
+        }
+
+        .status-success {
+            background: rgba(46, 204, 113, 0.1);
+            color: #27ae60;
+            border: 2px solid rgba(46, 204, 113, 0.2);
+        }
+
+        .status-error {
+            background: rgba(231, 76, 60, 0.1);
+            color: #e74c3c;
+            border: 2px solid rgba(231, 76, 60, 0.2);
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                margin: 10px;
+                padding: 24px;
+            }
+            
+            .pet-photo {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .pet-name {
+                font-size: 20px;
+            }
+        }
+
+        .emergency-info {
+            background: rgba(231, 76, 60, 0.1);
+            border: 2px solid rgba(231, 76, 60, 0.2);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .emergency-title {
+            color: #e74c3c;
+            font-weight: 600;
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .emergency-text {
+            color: #c0392b;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="emergency-info">
+            <div class="emergency-title">🐾 Pet Perdido</div>
+            <div class="emergency-text">Se você encontrou este pet, por favor ajude-nos a reuní-lo com sua família!</div>
+        </div>
+
+        <div class="pet-photo" id="petPhoto">
+            <span>FOTO DO PET</span>
+        </div>
+
+        <div class="pet-name" id="petName">
+            Carregando...
+        </div>
+
+        <div class="info-item">
+            <span class="info-label">Raça:</span>
+            <span class="info-value" id="petBreed">Carregando...</span>
+        </div>
+
+        <div class="info-item">
+            <span class="info-label">Idade:</span>
+            <span class="info-value" id="petAge">Carregando...</span>
+        </div>
+
+        <div class="info-item">
+            <span class="info-label">Peso:</span>
+            <span class="info-value" id="petWeight">Carregando...</span>
+        </div>
+
+        <div class="info-item">
+            <span class="info-label">Sexo:</span>
+            <span class="info-value" id="petGender">Carregando...</span>
+        </div>
+
+        <div class="info-item">
+            <span class="info-label">Cor:</span>
+            <span class="info-value" id="petColor">Carregando...</span>
+        </div>
+
+        <div class="address-section">
+            <div class="address-title">📍 Endereço do Tutor</div>
+            <div class="info-item">
+                <span class="info-label">Nome do Tutor:</span>
+                <span class="info-value" id="ownerName">Carregando...</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Telefone:</span>
+                <span class="info-value" id="ownerPhone">Carregando...</span>
+            </div>
+            <div class="address-text" id="ownerAddress">
+                Carregando endereço...
+            </div>
+            <div class="map-container">
+                <iframe 
+                    id="mapFrame"
+                    width="100%" 
+                    height="100%" 
+                    style="border:0;" 
+                    allowfullscreen="" 
+                    loading="lazy" 
+                    referrerpolicy="no-referrer-when-downgrade"
+                    src="about:blank">
+                </iframe>
+            </div>
+        </div>
+
+        <button class="location-btn" id="locationBtn" onclick="sendLocation()">
+            📍 Envie minha localização para o tutor
+        </button>
+
+        <div class="status-message" id="statusMessage"></div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
+    <script>
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+          apiKey: "AIzaSyDXR6NakEE4yB93rK5rSxG2-OUBPnqazgY",
+          authDomain: "pet-locate-42222.firebaseapp.com",
+          databaseURL: "https://pet-locate-42222-default-rtdb.europe-west1.firebasedatabase.app",
+          projectId: "pet-locate-42222",
+          storageBucket: "pet-locate-42222.firebasestorage.app",
+          messagingSenderId: "320851125516",
+          appId: "1:320851125516:web:440744a87b0984d47c9529",
+          measurementId: "G-GL55SGR8V8"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // Configurações do Telegram Bot
+        const TELEGRAM_BOT_TOKEN = '8062338455:AAEjOVXeZpJvG9FxapVtBUvaj4Y2s2F4gK8';
+        // O CHAT_ID agora virá do Firestore
+        let TELEGRAM_CHAT_ID = ''; 
+        const TELEGRAM_API_URL = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+
+        // Objeto para armazenar os dados do pet carregados do Firestore
+        let petData = {};
+
+        // Função para carregar dados do pet do Firestore
+        async function loadPetDataFromFirestore() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const petId = urlParams.get('id'); // Obter o ID do pet da URL
+
+            if (!petId) {
+                showStatus('❌ ID do pet não fornecido na URL. Ex: ?id=seu_id_do_pet', 'error');
+                return;
+            }
+
+            try {
+                const docRef = db.collection('pets').doc(petId);
+                const doc = await docRef.get();
+
+                if (doc.exists) {
+                    petData = doc.data();
+                    TELEGRAM_CHAT_ID = petData.telegramChatId; // Definir o chat ID do Telegram
+
+                    // Atualizar elementos da página com os dados do Firestore
+                    document.getElementById('petName').textContent = petData.name || 'N/A';
+                    document.getElementById('petBreed').textContent = petData.breed || 'N/A';
+                    document.getElementById('petAge').textContent = petData.age || 'N/A';
+                    document.getElementById('petWeight').textContent = petData.weight || 'N/A';
+                    document.getElementById('petGender').textContent = petData.gender || 'N/A';
+                    document.getElementById('petColor').textContent = petData.color || 'N/A';
+                    document.getElementById('ownerName').textContent = petData.ownerName || 'N/A';
+                    document.getElementById('ownerPhone').textContent = petData.ownerPhone || 'N/A';
+                    document.getElementById('ownerAddress').innerHTML = (petData.ownerAddress || 'N/A').replace(/\n/g, '<br>');
+
+                    // Carregar foto do pet se disponível
+                    if (petData.photo) {
+                        const petPhotoElement = document.getElementById('petPhoto');
+                        petPhotoElement.innerHTML = `<img src="${petData.photo}" alt="Foto do ${petData.name}">`;
+                    } else {
+                        document.getElementById('petPhoto').innerHTML = '<span>FOTO DO PET</span>';
+                    }
+
+                    // Atualizar mapa
+                    updateMap();
+
+                } else {
+                    showStatus('❌ Pet não encontrado no banco de dados.', 'error');
+                }
+            } catch (error) {
+                console.error('Erro ao carregar dados do Firestore:', error);
+                showStatus('❌ Erro ao carregar dados do pet. Verifique o ID.', 'error');
+            }
+        }
+
+        // Função para atualizar o mapa
+        function updateMap() {
+            const mapFrame = document.getElementById('mapFrame');
+            if (petData.ownerLat && petData.ownerLng) {
+                const embedUrl = `https://maps.google.com/maps?q=${petData.ownerLat},${petData.ownerLng}&z=15&output=embed`;
+                mapFrame.src = embedUrl;
+            } else {
+                mapFrame.src = 'about:blank'; // Limpa o mapa se não houver coordenadas
+            }
+        }
+
+        // Função para enviar localização
+        async function sendLocation() {
+            const btn = document.getElementById('locationBtn');
+            const statusMessage = document.getElementById('statusMessage');
+            
+            if (!navigator.geolocation) {
+                showStatus('Geolocalização não é suportada neste dispositivo.', 'error');
+                return;
+            }
+
+            if (!TELEGRAM_CHAT_ID) {
+                showStatus('❌ Chat ID do Telegram não configurado para este pet.', 'error');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading"></span>Obtendo localização...';
+            
+            try {
+                const position = await getCurrentPosition();
+                const { latitude, longitude } = position.coords;
+                
+                const address = await getAddressFromCoords(latitude, longitude);
+                
+                const message = `🚨 LOCALIZAÇÃO DO PET ENCONTRADO! 🚨\n\n🐾 Pet: ${petData.name || 'N/A'}\n👤 Tutor: ${petData.ownerName || 'N/A'}\n📞 Contato: ${petData.ownerPhone || 'N/A'}\n📍 Localização atual: ${address}\n🗺️ Coordenadas: ${latitude.toFixed(6)}, ${longitude.toFixed(6)}\n🔗 Google Maps: https://maps.google.com/?q=${latitude},${longitude}\n\n⏰ Horário: ${new Date().toLocaleString('pt-BR')}\n\nUma pessoa encontrou seu pet e compartilhou a localização. Entre em contato imediatamente!`;
+
+                await sendTelegramMessage(message);
+                
+                showStatus('✅ Localização enviada com sucesso! O tutor foi notificado.', 'success');
+                btn.innerHTML = '✅ Localização enviada!';
+                
+            } catch (error) {
+                console.error('Erro ao enviar localização:', error);
+                showStatus('❌ Erro ao enviar localização. Tente novamente.', 'error');
+                btn.disabled = false;
+                btn.innerHTML = '📍 Envie minha localização para o tutor';
+            }
+        }
+
+        // Função para obter posição atual
+        function getCurrentPosition() {
+            return new Promise((resolve, reject) => {
+                navigator.geolocation.getCurrentPosition(
+                    resolve,
+                    reject,
+                    {
+                        enableHighAccuracy: true,
+                        timeout: 10000,
+                        maximumAge: 60000
+                    }
+                );
+            });
+        }
+
+        //
+(Content truncated due to size limit. Use page ranges or line ranges to read remaining content)
